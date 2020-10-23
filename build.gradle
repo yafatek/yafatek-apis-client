@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'dev.yafarek'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    compile group: 'org.robolectric', name: 'android-all', version: '5.1.1_r9-robolectric-0' //Thanks for using https://jar-download.com
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
