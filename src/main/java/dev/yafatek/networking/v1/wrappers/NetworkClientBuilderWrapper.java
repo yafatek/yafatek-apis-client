@@ -17,6 +17,7 @@ public final class NetworkClientBuilderWrapper implements NetworkClientBuilder {
     }
 
     public static NetworkClientBuilderWrapper getInstance() {
+        System.out.println("builder instance...");
         if (networkClientBuilderWrapper == null) {
             synchronized (NetworkClientBuilderWrapper.class) {
                 networkClientBuilderWrapper = new NetworkClientBuilderWrapper();
@@ -28,6 +29,13 @@ public final class NetworkClientBuilderWrapper implements NetworkClientBuilder {
     @Override
     public NetworkClientBuilder url(String apiUrl) {
         extras.put("url", apiUrl);
+        return this;
+    }
+
+    @Override
+    public NetworkClientBuilder headers(Map<String, String> headers) {
+        // adding the headers.
+        headers.forEach(extras::put);
         return this;
     }
 

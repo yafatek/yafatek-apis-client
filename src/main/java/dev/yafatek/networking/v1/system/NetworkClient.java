@@ -16,11 +16,10 @@ public interface NetworkClient {
     /**
      * method to request data as a GET request from the Api
      *
-     * @param query the query to api
-     * @param <T>   the Type of the query
+     * @param <T> the Type of the query
      * @return an instance to continue chaining
      */
-    <T> NetworkClient get(Class<T> type, String query);
+    <T> NetworkClient get(Class<T> type, String token);
 
     <T> NetworkClient get(Class<T> type, String header, String token);
 
@@ -36,6 +35,13 @@ public interface NetworkClient {
      */
 
     <D, T> NetworkClient post(Class<D> type, T body);
+
+    /**
+     * loading images to android using okhttp
+     *
+     * @param imgUrl the image url where the img file is hosted.
+     * @return Bitmap file.
+     */
 
     // Bitmap in android
     Bitmap loadImage(String imgUrl);
@@ -69,6 +75,6 @@ public interface NetworkClient {
      * @param <T>  the Type of the wrapper
      * @return the Api response as a java object
      */
-    <T> T load(Class<T> type);
+    <T> T fetchData(Class<T> type);
 
 }

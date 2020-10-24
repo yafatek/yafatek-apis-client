@@ -3,7 +3,11 @@ package dev.yafatek.networking.v1.wrappers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dev.yafatek.networking.v1.deserializers.CustomJsonDeserializer;
+import dev.yafatek.networking.v1.models.ApiResponse;
+import dev.yafatek.networking.v1.models.Body;
 import dev.yafatek.networking.v1.system.NetworkClient;
 import okhttp3.*;
 
@@ -16,6 +20,12 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+/**
+ * for deserializing the objects please refer to: https://stackoverflow.com/questions/34660339/gson-deserialization-with-generic-types-and-generic-field-names
+ *
+ * @author Feras E Alawadi
+ * @version 1.0.0
+ */
 public final class BasicNetworkClientWrapper implements NetworkClient {
     private static final Logger logger = Logger.getLogger(BasicNetworkClientWrapper.class.getName());
     // meta Data for the post request.
@@ -27,12 +37,12 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .build();
 
-    private static final Gson gson = new Gson();
+    private Gson gson = new Gson();
     private static BasicNetworkClientWrapper basicNetworkClientWrapper;
     // extra api attr
     private static Map<String, String> extras = new HashMap<>();
     // api response Object.
-    private Class<?> apiResponse;
+    private ApiResponse<Body<?>> apiResponse;
 
     /* static methods only  */
     private BasicNetworkClientWrapper() {
@@ -40,6 +50,7 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
 
     /* singleton object */
     public static BasicNetworkClientWrapper getInstance(Map<String, String> attributes) {
+        System.out.println("basic instance...");
         extras = attributes;
         // the object is expensive so use only the singleton object.
         if (basicNetworkClientWrapper == null) {
@@ -87,10 +98,8 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
 
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                logger.info("file uploaded...");
                 Type deSerializeType = new TypeToken<T>() {
                 }.getType();
-
                 apiResponse = gson.fromJson(Objects.requireNonNull(response.body()).charStream(), deSerializeType);
             }
 
@@ -101,7 +110,15 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
         return this;
     }
 
+    @Override
     public <T> NetworkClient get(Class<T> type, String token) {
+
+        logger.info("in");
+        Type returnType = new TypeToken<Body<T>>() {
+        }.getType();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(returnType, new CustomJsonDeserializer<>(type)
+                ).create();
 
         Request request = new Request.Builder()
                 .header("Accept", "application/json")
@@ -114,9 +131,11 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
             if (response.isSuccessful()) {
                 Type deSerializeType = new TypeToken<T>() {
                 }.getType();
-                apiResponse = gson.fromJson(Objects.requireNonNull(response.body()).charStream(), deSerializeType);
+                apiResponse = gson.fromJson(Objects.requireNonNull(response.body()).charStream(), returnType);
+                System.out.println("apiResponse" + apiResponse);
+//                apiResponse = gson.fromJson(Objects.requireNonNull(response.body()).charStream(), deSerializeType);
 
-            }
+            } else System.out.println("not success..." + response.code());
         } catch (Exception e) {
             throw new IllegalStateException("can't get data from api, error: " + e.getMessage());
 
@@ -198,7 +217,7 @@ public final class BasicNetworkClientWrapper implements NetworkClient {
     }
 
     @Override
-    public <T> T load(Class<T> type) {
+    public <T> T fetchData(Class<T> type) {
         return (T) apiResponse;
     }
 

@@ -2,6 +2,8 @@ package dev.yafatek.networking.v1.system;
 
 import dev.yafatek.networking.v1.wrappers.NetworkClientBuilderWrapper;
 
+import java.util.Map;
+
 public interface NetworkClientBuilder {
     /**
      * method to Build a new implementation of the interface
@@ -33,6 +35,8 @@ public interface NetworkClientBuilder {
      */
 
     NetworkClientBuilder url(String apiUrl);
+
+    NetworkClientBuilder headers(Map<String, String> headers);
 
     NetworkClient then();
 }
