@@ -1,21 +1,23 @@
 package dev.yafatek.networking.v1.models;
 
-import java.util.Objects;
 
 public class ApiResponse<T> {
     private boolean status;
     private String code;
     private String message;
-    private T body;
+    private T results;
+    private ErrorResponse errors;
 
     public ApiResponse() {
     }
 
-    public ApiResponse(boolean status, String code, String message, T body) {
+
+    public ApiResponse(boolean status, String code, String message, T results, ErrorResponse errors) {
         this.status = status;
         this.code = code;
         this.message = message;
-        this.body = body;
+        this.results = results;
+        this.errors = errors;
     }
 
     public boolean isStatus() {
@@ -42,37 +44,20 @@ public class ApiResponse<T> {
         this.message = message;
     }
 
-    public T getBody() {
-        return body;
+    public T getResults() {
+        return results;
     }
 
-    public void setBody(T body) {
-        this.body = body;
+    public void setResults(T results) {
+        this.results = results;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ApiResponse<?> that = (ApiResponse<?>) o;
-        return status == that.status &&
-                Objects.equals(code, that.code) &&
-                Objects.equals(message, that.message) &&
-                Objects.equals(body, that.body);
+    public ErrorResponse getErrors() {
+        return errors;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(status, code, message, body);
+    public void setErrors(ErrorResponse errors) {
+        this.errors = errors;
     }
 
-    @Override
-    public String toString() {
-        return "ApiResponse{" +
-                "status=" + status +
-                ", code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", body=" + body +
-                '}';
-    }
 }

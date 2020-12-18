@@ -8,7 +8,7 @@ apply plugin: 'signing'
 
 group 'dev.yafarek'
 archivesBaseName = "yafatek-network-client"
-version '1.0.0'
+version '1.0.1'
 signing {
     sign configurations.archives
 }

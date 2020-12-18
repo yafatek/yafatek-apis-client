@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CustomJsonDeserializer<T> implements JsonDeserializer<Body<T>> {
     private final Class<T> clazz;
 
